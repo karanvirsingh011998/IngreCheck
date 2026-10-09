@@ -9,8 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { colors, radius, spacing, type } from '../theme';
@@ -20,12 +19,11 @@ type Mode = 'sign-in' | 'sign-up';
 
 type Props = {
   mode: Mode;
-  onBack: () => void;
   onSwitch: () => void;
   onSuccess: () => void;
 };
 
-export function AuthForm({ mode, onBack, onSwitch, onSuccess }: Props) {
+export function AuthForm({ mode, onSwitch, onSuccess }: Props) {
   const { signInWithEmail, signUpWithEmail, sendPasswordReset } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -74,12 +72,9 @@ export function AuthForm({ mode, onBack, onSwitch, onSuccess }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <AppShell>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={onBack}>
-            <Text style={styles.back}>Back</Text>
-          </Pressable>
           <Text style={styles.title}>{mode === 'sign-in' ? 'Sign in' : 'Create account'}</Text>
           <Text style={styles.body}>Use the email and password for your optional IngreCheck profile.</Text>
           <TextInput
@@ -116,15 +111,11 @@ export function AuthForm({ mode, onBack, onSwitch, onSuccess }: Props) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   flex: {
     flex: 1,
   },
@@ -132,11 +123,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
     gap: spacing.md,
-  },
-  back: {
-    ...type.label,
-    color: colors.primary,
-    minHeight: 44,
   },
   title: {
     ...type.display,

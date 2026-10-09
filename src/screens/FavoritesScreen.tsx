@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { listFavorites, removeFavorite, SIGN_IN_TO_SAVE, type SavedProduct } from '../services/cloud';
@@ -54,12 +53,7 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Favorites</Text>
         {!profile ? (
@@ -82,7 +76,7 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps) {
         ))}
         {message ? <Text style={styles.error}>{message}</Text> : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

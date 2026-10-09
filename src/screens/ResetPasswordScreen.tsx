@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { colors, radius, spacing, type } from '../theme';
@@ -32,7 +31,7 @@ export function ResetPasswordScreen({ navigation }: ResetPasswordScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <AppShell>
       <View style={styles.content}>
         <Pressable
           accessibilityRole="button"
@@ -58,7 +57,7 @@ export function ResetPasswordScreen({ navigation }: ResetPasswordScreenProps) {
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button label="Save password" loading={loading} onPress={() => void save()} />
       </View>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

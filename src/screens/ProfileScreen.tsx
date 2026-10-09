@@ -1,12 +1,18 @@
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { premiumMode, showsPremiumScreen } from '../features/entitlements';
-import { deleteOwnAccount, loadDisplayName, saveDisplayName } from '../services/cloud';
+import {
+  deleteOwnAccount,
+  loadAccountCounts,
+  loadDisplayName,
+  saveDisplayName,
+  type AccountCounts,
+} from '../services/cloud';
 import { colors, radius, spacing, type } from '../theme';
 import type { AuthProviderName } from '../types/auth';
 import type { ProfileScreenProps } from '../types/navigation';
@@ -18,10 +24,10 @@ const PROVIDER_LABELS: Record<AuthProviderName, string> = {
   unknown: 'Account',
 };
 
-const LINKS: { route: 'ScanHistory' | 'Favorites' | 'Preferences'; label: string }[] = [
-  { route: 'ScanHistory', label: 'Scan history' },
-  { route: 'Favorites', label: 'Favorites' },
-  { route: 'Preferences', label: 'Ingredient preferences' },
+const COUNT_CARDS: { key: keyof AccountCounts; label: string; route: 'ScanHistory' | 'Favorites' | 'Preferences' }[] = [
+  { key: 'scans', label: 'Scan history', route: 'ScanHistory' },
+  { key: 'favorites', label: 'Favorites', route: 'Favorites' },
+  { key: 'preferences', label: 'Ingredient preferences', route: 'Preferences' },
 ];
 
 export function ProfileScreen({ navigation }: ProfileScreenProps) {
@@ -29,6 +35,8 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   const [busy, setBusy] = useState<'google' | 'apple' | 'name' | 'delete' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState('');
+  const [counts, setCounts] = useState<AccountCounts | null>(null);
+  const [countsNote, setCountsNote] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -36,10 +44,19 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
         return;
       }
       setDisplayName(profile.displayName ?? '');
+      setCounts(null);
+      setCountsNote(null);
       void loadDisplayName().then((result) => {
         if (result.ok && result.data) {
           setDisplayName(result.data);
         }
+      });
+      void loadAccountCounts().then((result) => {
+        if (!result.ok) {
+          setCountsNote(result.message);
+          return;
+        }
+        setCounts(result.data);
       });
     }, [profile]),
   );
@@ -102,12 +119,7 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Profile</Text>
         {initializing ? <ActivityIndicator color={colors.primary} /> : null}
@@ -116,6 +128,22 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.card}>
               {profile.email ? <Text style={styles.body}>{profile.email}</Text> : null}
               <Text style={styles.caption}>Signed in with {PROVIDER_LABELS[profile.provider]}</Text>
+              <View style={styles.counts}>
+                {COUNT_CARDS.map((card) => (
+                  <Pressable
+                    key={card.key}
+                    accessibilityRole="button"
+                    onPress={() => navigation.navigate(card.route)}
+                    style={styles.countCard}
+                  >
+                    <Text style={styles.countValue}>
+                      {counts ? String(counts[card.key]) : countsNote ? 'Not available' : '…'}
+                    </Text>
+                    <Text style={styles.caption}>{card.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+              {countsNote ? <Text style={styles.error}>{countsNote}</Text> : null}
               <TextInput
                 accessibilityLabel="Display name"
                 onChangeText={setDisplayName}
@@ -126,14 +154,6 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
               />
               <Button label="Save name" loading={busy === 'name'} onPress={() => void saveName()} />
             </View>
-            {LINKS.map((link) => (
-              <Button
-                key={link.route}
-                label={link.label}
-                onPress={() => navigation.navigate(link.route)}
-                variant="secondary"
-              />
-            ))}
             {showsPremiumScreen(premiumMode) ? (
               <Button label="Premium" onPress={() => navigation.navigate('Premium')} variant="secondary" />
             ) : null}
@@ -178,24 +198,11 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
           </View>
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  top: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.sm,
-  },
-  back: {
-    ...type.label,
-    color: colors.primary,
-    minHeight: 44,
-  },
   content: {
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
@@ -229,6 +236,23 @@ const styles = StyleSheet.create({
   body: {
     ...type.body,
     color: colors.secondary,
+  },
+  counts: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  countCard: {
+    flexGrow: 1,
+    minWidth: 96,
+    backgroundColor: colors.mint,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    gap: spacing.xs,
+  },
+  countValue: {
+    ...type.title,
+    color: colors.primary,
   },
   caption: {
     ...type.caption,

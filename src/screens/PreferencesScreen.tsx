@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -72,12 +71,7 @@ export function PreferencesScreen({ navigation }: PreferencesScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Ingredient preferences</Text>
         <Text style={styles.body}>
@@ -145,7 +139,7 @@ export function PreferencesScreen({ navigation }: PreferencesScreenProps) {
         ))}
         {message ? <Text style={styles.error}>{message}</Text> : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

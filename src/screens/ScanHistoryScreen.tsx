@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { canUseExtendedHistory, FREE_HISTORY_LIMIT, premiumMode, showsPremiumScreen } from '../features/entitlements';
@@ -96,12 +95,7 @@ export function ScanHistoryScreen({ navigation }: ScanHistoryScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Scan history</Text>
         {!profile ? (
@@ -138,7 +132,7 @@ export function ScanHistoryScreen({ navigation }: ScanHistoryScreenProps) {
           </Text>
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

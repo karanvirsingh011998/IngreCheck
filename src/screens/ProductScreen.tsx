@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { AllergensSection } from '../components/AllergensSection';
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { IngredientsSection } from '../components/IngredientsSection';
 import { NovaSection, ProductDisclaimer, SourceAttribution } from '../components/NovaSection';
@@ -84,7 +83,7 @@ export function ProductScreen({ navigation, route }: ProductScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
+    <AppShell>
       <View style={styles.top}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
           <Text style={styles.back}>Back</Text>
@@ -122,7 +121,7 @@ export function ProductScreen({ navigation, route }: ProductScreenProps) {
           onPress={() => navigation.navigate('Scanner', { requestId: Date.now() })}
         />
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

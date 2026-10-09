@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppShell } from '../components/AppShell';
 import { LEGAL_REVIEW_NOTE, PRIVACY_SECTIONS, TERMS_SECTIONS } from '../content/legal';
 import { colors, spacing, type } from '../theme';
 import type { PrivacyScreenProps, TermsScreenProps } from '../types/navigation';
@@ -13,13 +13,11 @@ type Props = {
 
 function LegalDocument({ title, sections, onBack }: Props) {
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
+    <AppShell>
+      <ScrollView contentContainerStyle={styles.content}>
         <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={onBack}>
           <Text style={styles.back}>Back</Text>
         </Pressable>
-      </View>
-      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.note}>{LEGAL_REVIEW_NOTE}</Text>
         {sections.map((section) => (
@@ -29,7 +27,7 @@ function LegalDocument({ title, sections, onBack }: Props) {
           </View>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

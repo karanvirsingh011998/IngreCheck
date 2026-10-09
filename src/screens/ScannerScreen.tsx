@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Linking, StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
+import { AppFooter } from '../components/AppFooter';
+import { AppHeader } from '../components/AppHeader';
 import { Button } from '../components/Button';
 import { ManualBarcodeModal } from '../components/ManualBarcodeModal';
 import { StateMessage } from '../components/StateMessage';
@@ -18,6 +20,7 @@ import { lookupProduct } from '../services/openFoodFacts';
 type Phase = 'ready' | 'loading' | 'error';
 
 export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
+  const insets = useSafeAreaInsets();
   const focused = useIsFocused();
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraFailed, setCameraFailed] = useState(false);
@@ -106,7 +109,7 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
 
   return (
     <View style={styles.screen}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {focused && permission?.granted && !cameraFailed && phase === 'ready' ? (
         <CameraView
           facing="back"
@@ -118,11 +121,9 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
       ) : (
         <View style={styles.fallback} />
       )}
-      <SafeAreaView style={styles.overlay}>
-        <View style={styles.topBar}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Close scanner" onPress={() => navigation.goBack()}>
-            <Text style={styles.close}>Close</Text>
-          </Pressable>
+      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.overlay}>
+        <View style={[styles.topBar, { paddingTop: insets.top }]}>
+          <AppHeader />
         </View>
         <View style={styles.middle}>
           {!permission ? (
@@ -194,6 +195,7 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
             </>
           ) : null}
         </View>
+        <AppFooter />
       </SafeAreaView>
       <ManualBarcodeModal visible={manualOpen} onClose={() => setManualOpen(false)} onSubmit={(code) => void runLookup(code)} />
     </View>
@@ -214,14 +216,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   topBar: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.sm,
-  },
-  close: {
-    ...type.label,
-    color: colors.white,
-    minHeight: 44,
-    textAlignVertical: 'center',
+    backgroundColor: colors.white,
   },
   middle: {
     paddingHorizontal: spacing.xl,

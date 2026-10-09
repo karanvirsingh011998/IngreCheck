@@ -1,6 +1,6 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { premiumMode } from '../features/entitlements';
 import { colors, radius, spacing, type } from '../theme';
@@ -12,14 +12,9 @@ const INCLUDED = [
   'Nutrition, listed allergens, and NOVA stay free.',
 ];
 
-export function PremiumScreen({ navigation }: PremiumScreenProps) {
+export function PremiumScreen(_props: PremiumScreenProps) {
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Make smarter food choices with IngreCheck Premium</Text>
         <Text style={styles.body}>
@@ -45,7 +40,7 @@ export function PremiumScreen({ navigation }: PremiumScreenProps) {
         <Button label="Restore purchases" disabled onPress={() => undefined} variant="secondary" />
         <Text style={styles.caption}>Restore will be available when store billing is added.</Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 

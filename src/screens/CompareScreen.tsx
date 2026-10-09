@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { ComparisonReport } from '../components/ComparisonReport';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +8,7 @@ import { listPreferences } from '../services/cloud';
 import { colors, radius, spacing, type } from '../theme';
 import type { Product } from '../types/product';
 import type { CompareScreenProps } from '../types/navigation';
+import { clearCompareSlots, readCompareSlots, saveCompareSlot } from '../state/compareSlots';
 import { compareProducts } from '../utils/compareProducts';
 import type { PreferenceType } from '../utils/preferences';
 
@@ -16,8 +16,8 @@ type Slot = 'a' | 'b';
 
 export function CompareScreen({ navigation, route }: CompareScreenProps) {
   const { profile } = useAuth();
-  const [productA, setProductA] = useState<Product | null>(null);
-  const [productB, setProductB] = useState<Product | null>(null);
+  const [productA, setProductA] = useState<Product | null>(() => readCompareSlots().a);
+  const [productB, setProductB] = useState<Product | null>(() => readCompareSlots().b);
   const [preferences, setPreferences] = useState<{ ingredientName: string; preferenceType: PreferenceType }[]>([]);
 
   useEffect(() => {
@@ -26,11 +26,9 @@ export function CompareScreen({ navigation, route }: CompareScreenProps) {
     if (!route.params?.requestId || !incoming || !slot) {
       return;
     }
-    if (slot === 'a') {
-      setProductA(incoming);
-    } else {
-      setProductB(incoming);
-    }
+    const next = saveCompareSlot(slot, incoming);
+    setProductA(next.a);
+    setProductB(next.b);
   }, [route.params?.incomingProduct, route.params?.incomingSlot, route.params?.requestId]);
 
   useEffect(() => {
@@ -58,12 +56,7 @@ export function CompareScreen({ navigation, route }: CompareScreenProps) {
   const comparison = productA && productB ? compareProducts(productA, productB, preferences) : null;
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.top}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>Back</Text>
-        </Pressable>
-      </View>
+    <AppShell>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Compare products</Text>
         <Text style={styles.body}>
@@ -89,14 +82,15 @@ export function CompareScreen({ navigation, route }: CompareScreenProps) {
           <Button
             label="Clear comparison"
             onPress={() => {
-              setProductA(null);
-              setProductB(null);
+              const next = clearCompareSlots();
+              setProductA(next.a);
+              setProductB(next.b);
             }}
             variant="secondary"
           />
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppShell>
   );
 }
 
@@ -154,9 +148,6 @@ function SlotCard({
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
-  top: { paddingHorizontal: spacing.xl, paddingTop: spacing.sm },
-  back: { ...type.label, color: colors.primary, minHeight: 44 },
   content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xxxl, gap: spacing.lg },
   title: { ...type.display, color: colors.primary },
   card: {

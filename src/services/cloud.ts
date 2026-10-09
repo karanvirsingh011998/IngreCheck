@@ -341,6 +341,51 @@ export async function saveDisplayName(displayName: string): Promise<CloudResult<
   return { ok: true, data: trimmed };
 }
 
+export type AccountCounts = {
+  scans: number;
+  favorites: number;
+  preferences: number;
+};
+
+async function countRows(
+  table: 'scan_history' | 'favorite_products' | 'ingredient_preferences',
+  userId: string,
+): Promise<CloudResult<number>> {
+  if (!supabase) {
+    return cloudFailure('unconfigured', NOT_CONFIGURED);
+  }
+  const result = await supabase.from(table).select('id', { count: 'exact', head: true }).eq('user_id', userId);
+  if (result.error) {
+    return mapCloudError(result.error);
+  }
+  return { ok: true, data: typeof result.count === 'number' ? result.count : 0 };
+}
+
+export async function loadAccountCounts(): Promise<CloudResult<AccountCounts>> {
+  const user = await currentUserId();
+  if (!user.ok || !supabase) {
+    return user.ok ? cloudFailure('unconfigured', NOT_CONFIGURED) : user;
+  }
+  const [scans, favorites, preferences] = await Promise.all([
+    countRows('scan_history', user.data),
+    countRows('favorite_products', user.data),
+    countRows('ingredient_preferences', user.data),
+  ]);
+  if (!scans.ok) {
+    return scans;
+  }
+  if (!favorites.ok) {
+    return favorites;
+  }
+  if (!preferences.ok) {
+    return preferences;
+  }
+  return {
+    ok: true,
+    data: { scans: scans.data, favorites: favorites.data, preferences: preferences.data },
+  };
+}
+
 export async function deleteOwnAccount(): Promise<CloudResult<true>> {
   if (!supabase) {
     return cloudFailure('unconfigured', NOT_CONFIGURED);
