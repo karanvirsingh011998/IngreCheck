@@ -152,6 +152,7 @@ npx expo-doctor
 - Optional Supabase profile with email, Google, and Apple
 - Scan history, favorites, and ingredient preferences for a signed-in account
 - A Premium information screen with proposed test prices and no checkout
+- Side-by-side comparison of two products, including when you are signed out
 - Loading, permission, not-found, offline, timeout, and malformed-data states
 
 ## Known limitations
@@ -161,8 +162,11 @@ npx expo-doctor
 - Scan history, favorites, and preferences stay empty until the SQL above has been run and the account is signed in.
 - Row level security is not verified by the unit tests. Use the two-account checklist above.
 - Premium prices are proposed test prices. There is no checkout and no restore-purchases flow.
-- Product comparison is not in this version.
+- Comparison does not pick a winner or a health score. It is not saved to Supabase. Missing data stays missing.
 - Google and Apple sign-in need the dashboard setup above. Email sign-in also needs a Supabase project.
 - The iOS Simulator is a poor test of the camera. Confirm scanning on a phone.
 - This version does not claim a health score, and it does not detect contaminants from a barcode.
-# IngreCheck
+
+## Launch drafts
+
+Privacy, terms, the store listing, and the launch checklist are in `docs/`. They are drafts. Placeholders still need your details, and a lawyer has not reviewed them. The checklist says which steps only you can do.
