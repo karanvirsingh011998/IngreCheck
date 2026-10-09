@@ -1,7 +1,6 @@
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { OPEN_FOOD_FACTS_TERMS } from '../config/openFoodFacts';
 import { colors, radius, spacing, type } from '../theme';
 import type { RootStackParamList } from '../types/navigation';
 import { BrandMark } from './BrandMark';
@@ -159,20 +158,6 @@ export function LandingHome({ navigation }: { navigation: Navigation }) {
           If you have an allergy, check the package you are holding. Formulas and labels can change. IngreCheck is an
           information tool and does not replace medical advice.
         </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Where the information comes from</Text>
-        <Text style={styles.body}>
-          Product details come from Open Food Facts. Contributors add that data. The database can be incomplete,
-          inaccurate, or out of date. IngreCheck does not verify each product itself.
-        </Text>
-        <Pressable accessibilityRole="link" onPress={() => Linking.openURL('https://world.openfoodfacts.org')} style={styles.linkHit}>
-          <Text style={styles.link}>Open Food Facts</Text>
-        </Pressable>
-        <Pressable accessibilityRole="link" onPress={() => Linking.openURL(OPEN_FOOD_FACTS_TERMS)} style={styles.linkHit}>
-          <Text style={styles.link}>Open Food Facts terms and Open Database License</Text>
-        </Pressable>
       </View>
 
       <View style={styles.closing}>
