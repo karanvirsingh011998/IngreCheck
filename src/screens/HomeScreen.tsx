@@ -1,12 +1,14 @@
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AppShell } from '../components/AppShell';
-import { BrandMark } from '../components/BrandMark';
-import { Button } from '../components/Button';
+import { LandingHome } from '../components/LandingHome';
 import { useAuth } from '../context/AuthContext';
 import { dashboardDetail, dashboardLinks, openAppDestination } from '../navigation/appLinks';
+import { listScanHistory, type SavedProduct } from '../services/cloud';
+import { reopenProduct } from '../services/reopenProduct';
 import { colors, radius, spacing, type } from '../theme';
 import type { RootStackParamList } from '../types/navigation';
 
@@ -14,6 +16,43 @@ export function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { profile } = useAuth();
   const name = profile?.displayName?.trim() || profile?.email || 'there';
+  const [recent, setRecent] = useState<SavedProduct[] | null>(null);
+  const [recentNote, setRecentNote] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!profile) {
+        setRecent(null);
+        setRecentNote(null);
+        return undefined;
+      }
+      let active = true;
+      void listScanHistory(0).then((result) => {
+        if (!active) {
+          return;
+        }
+        if (!result.ok) {
+          setRecent(null);
+          setRecentNote(result.message);
+          return;
+        }
+        setRecentNote(null);
+        setRecent(result.data.items.slice(0, 3));
+      });
+      return () => {
+        active = false;
+      };
+    }, [profile]),
+  );
+
+  async function openRecent(item: SavedProduct) {
+    const result = await reopenProduct(item.barcode);
+    if (!result.ok) {
+      setRecentNote(result.message);
+      return;
+    }
+    navigation.navigate('Product', { product: result.product, fromCache: result.fromCache });
+  }
 
   if (profile) {
     return (
@@ -34,6 +73,18 @@ export function HomeScreen() {
               </Pressable>
             ))}
           </View>
+          <Text style={styles.tileTitle}>Recent scans</Text>
+          {recent === null && !recentNote ? <Text style={styles.description}>Loading recent scans…</Text> : null}
+          {recentNote ? <Text style={styles.description}>{recentNote}</Text> : null}
+          {recent && recent.length === 0 ? (
+            <Text style={styles.description}>No saved scans yet. Scan or search for a product to start.</Text>
+          ) : null}
+          {recent?.map((item) => (
+            <Pressable key={item.id} accessibilityRole="button" onPress={() => void openRecent(item)} style={styles.tile}>
+              <Text style={styles.tileTitle}>{item.productName ?? 'Unnamed product'}</Text>
+              <Text style={styles.tileDetail}>{item.brand ?? item.barcode}</Text>
+            </Pressable>
+          ))}
         </ScrollView>
       </AppShell>
     );
@@ -41,47 +92,12 @@ export function HomeScreen() {
 
   return (
     <AppShell>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <BrandMark size={88} />
-        <Text style={styles.wordmark}>IngreCheck</Text>
-        <Text style={styles.tagline}>Scan ingredients. Know instantly.</Text>
-        <Text style={styles.headline}>Know What's in Your Food.</Text>
-        <Text style={styles.description}>
-          Scan packaged food barcodes to explore ingredients, nutrition, allergens, and available processing
-          information.
-        </Text>
-        <View style={styles.actions}>
-          <Button label="Start Scan" onPress={() => navigation.navigate('Scanner')} />
-          <Button label="Log In" onPress={() => navigation.navigate('SignIn')} variant="secondary" />
-          <Button label="Sign Up" onPress={() => navigation.navigate('SignUp')} variant="secondary" />
-          <Button label="Compare products" onPress={() => navigation.navigate('Compare')} variant="ghost" />
-        </View>
-        <Text style={styles.note}>
-          Product information may be incomplete or different from the package. Check the label, especially if you have
-          an allergy.
-        </Text>
-      </ScrollView>
+      <LandingHome navigation={navigation} />
     </AppShell>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.xxl,
-    gap: spacing.md,
-  },
-  wordmark: {
-    ...type.display,
-    color: colors.primary,
-    marginTop: spacing.lg,
-  },
-  tagline: {
-    ...type.heading,
-    color: colors.fresh,
-  },
   headline: {
     ...type.title,
     color: colors.text,
@@ -89,15 +105,6 @@ const styles = StyleSheet.create({
   description: {
     ...type.body,
     color: colors.secondary,
-  },
-  actions: {
-    gap: spacing.md,
-    marginTop: spacing.lg,
-  },
-  note: {
-    ...type.caption,
-    color: colors.secondary,
-    marginTop: spacing.lg,
   },
   dashboard: {
     paddingHorizontal: spacing.xl,

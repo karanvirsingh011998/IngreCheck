@@ -12,6 +12,7 @@ import {
   updatePreference,
   type IngredientPreference,
 } from '../services/cloud';
+import { PREFERENCE_LIMIT_NOTE } from '../content/help';
 import { colors, radius, spacing, type } from '../theme';
 import type { PreferencesScreenProps } from '../types/navigation';
 import { validatePreference, type PreferenceType } from '../utils/preferences';
@@ -76,7 +77,7 @@ export function PreferencesScreen({ navigation }: PreferencesScreenProps) {
         <Text style={styles.title}>Ingredient preferences</Text>
         <Text style={styles.body}>
           Add names you want to avoid or monitor. A product page flags an exact name match. This is your list, not an
-          allergen check.
+          allergen check. {PREFERENCE_LIMIT_NOTE}
         </Text>
         {!profile ? (
           <View style={styles.stack}>

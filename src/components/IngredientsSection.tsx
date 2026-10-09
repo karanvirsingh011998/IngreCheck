@@ -15,11 +15,17 @@ export function IngredientsSection({ product, preferenceNotes }: Props) {
       <Text style={styles.heading}>Ingredients</Text>
       {product.ingredientsText ? (
         <View style={styles.original}>
-          <Text style={styles.caption}>Original list</Text>
+          <Text style={styles.caption}>Recorded list</Text>
           <Text style={styles.originalText}>{product.ingredientsText}</Text>
+          <Text style={styles.caption}>
+            This is only what the database recorded. It may be incomplete, and it has not been checked against your
+            package.
+          </Text>
         </View>
       ) : (
-        <Text style={styles.empty}>No ingredient list is available for this product.</Text>
+        <Text style={styles.empty}>
+          No ingredient list is available. That does not mean this product has no ingredients.
+        </Text>
       )}
       {product.ingredients.map((ingredient, index) => (
         <IngredientCard

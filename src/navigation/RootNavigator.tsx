@@ -5,17 +5,20 @@ import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CompareScreen } from '../screens/CompareScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
+import { HelpScreen } from '../screens/HelpScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { PrivacyScreen, TermsScreen } from '../screens/LegalScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { PremiumScreen } from '../screens/PremiumScreen';
 import { PreferencesScreen } from '../screens/PreferencesScreen';
 import { ProductScreen } from '../screens/ProductScreen';
+import { ReportProductScreen } from '../screens/ReportProductScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { ResetPasswordScreen } from '../screens/ResetPasswordScreen';
 import { ScanHistoryScreen } from '../screens/ScanHistoryScreen';
 import { SelectSavedScreen } from '../screens/SelectSavedScreen';
 import { ScannerScreen } from '../screens/ScannerScreen';
+import { SearchScreen } from '../screens/SearchScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { colors } from '../theme';
@@ -58,6 +61,9 @@ export function RootNavigator() {
         <Stack.Screen name="Premium" component={PremiumScreen} />
         <Stack.Screen name="Compare" component={CompareScreen} />
         <Stack.Screen name="SelectSaved" component={SelectSavedScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Help" component={HelpScreen} />
+        <Stack.Screen name="ReportProduct" component={ReportProductScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

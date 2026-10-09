@@ -2,7 +2,13 @@ import { signedInFooterLinks, signedInMenuLinks, signedOutFooterLinks, signedOut
 
 describe('app links', () => {
   it('offers sign up, log in, and scan when signed out', () => {
-    expect(signedOutMenuLinks.map((link) => link.destination)).toEqual(['SignUp', 'SignIn', 'Scanner', 'Compare']);
+    expect(signedOutMenuLinks.map((link) => link.destination)).toEqual([
+      'SignUp',
+      'SignIn',
+      'Scanner',
+      'Search',
+      'Compare',
+    ]);
     expect(signedOutFooterLinks.map((link) => link.destination)).toEqual(['SignUp', 'SignIn', 'Scanner']);
   });
 
@@ -10,6 +16,7 @@ describe('app links', () => {
     expect(signedInMenuLinks.map((link) => link.destination)).toEqual([
       'Home',
       'Scanner',
+      'Search',
       'Compare',
       'Favorites',
       'ScanHistory',

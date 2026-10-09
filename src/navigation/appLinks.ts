@@ -11,7 +11,8 @@ export type AppDestination =
   | 'Favorites'
   | 'ScanHistory'
   | 'Preferences'
-  | 'Profile';
+  | 'Profile'
+  | 'Search';
 
 export type AppLink = {
   label: string;
@@ -22,12 +23,14 @@ export const signedOutMenuLinks: AppLink[] = [
   { label: 'Sign up', destination: 'SignUp' },
   { label: 'Log in', destination: 'SignIn' },
   { label: 'Scan', destination: 'Scanner' },
+  { label: 'Search', destination: 'Search' },
   { label: 'Compare', destination: 'Compare' },
 ];
 
 export const signedInMenuLinks: AppLink[] = [
   { label: 'Dashboard', destination: 'Home' },
   { label: 'Scan', destination: 'Scanner' },
+  { label: 'Search', destination: 'Search' },
   { label: 'Compare', destination: 'Compare' },
   { label: 'Favorites', destination: 'Favorites' },
   { label: 'Scan history', destination: 'ScanHistory' },
@@ -51,6 +54,7 @@ export const signedInFooterLinks: AppLink[] = [
 
 export const dashboardLinks: AppLink[] = [
   { label: 'Scan', destination: 'Scanner' },
+  { label: 'Search', destination: 'Search' },
   { label: 'Compare', destination: 'Compare' },
   { label: 'Favorites', destination: 'Favorites' },
   { label: 'Scan history', destination: 'ScanHistory' },
@@ -63,6 +67,7 @@ const DASHBOARD_DETAILS: Record<AppDestination, string> = {
   SignUp: 'Create an optional account.',
   SignIn: 'Open your optional account.',
   Scanner: 'Read a packaged food barcode.',
+  Search: 'Find a product by name or brand.',
   Compare: 'Place two products side by side.',
   Favorites: 'Products you saved.',
   ScanHistory: 'Products you opened while signed in.',
@@ -90,6 +95,9 @@ export function openAppDestination(
       return;
     case 'Scanner':
       navigation.navigate('Scanner', { requestId: Date.now() });
+      return;
+    case 'Search':
+      navigation.navigate('Search');
       return;
     case 'Compare':
       navigation.navigate('Compare');

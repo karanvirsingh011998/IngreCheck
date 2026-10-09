@@ -112,6 +112,13 @@ export function ProductScreen({ navigation, route }: ProductScreenProps) {
         <SourceAttribution product={product} />
         <ProductDisclaimer />
         <Button
+          label="Report incorrect information"
+          onPress={() =>
+            navigation.navigate('ReportProduct', { productName: product.name, sourceUrl: product.sourceUrl })
+          }
+          variant="secondary"
+        />
+        <Button
           label="Compare this product"
           onPress={() => navigation.navigate('Compare', { incomingSlot: 'a', incomingProduct: product, requestId: Date.now() })}
           variant="secondary"

@@ -19,6 +19,9 @@ export type RootStackParamList = {
   Premium: undefined;
   Compare: { incomingSlot?: 'a' | 'b'; incomingProduct?: Product; requestId?: number } | undefined;
   SelectSaved: { slot: 'a' | 'b' };
+  Search: undefined;
+  Help: undefined;
+  ReportProduct: { productName: string; sourceUrl: string };
 };
 
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -37,3 +40,6 @@ export type PreferencesScreenProps = NativeStackScreenProps<RootStackParamList, 
 export type PremiumScreenProps = NativeStackScreenProps<RootStackParamList, 'Premium'>;
 export type CompareScreenProps = NativeStackScreenProps<RootStackParamList, 'Compare'>;
 export type SelectSavedScreenProps = NativeStackScreenProps<RootStackParamList, 'SelectSaved'>;
+export type SearchScreenProps = NativeStackScreenProps<RootStackParamList, 'Search'>;
+export type HelpScreenProps = NativeStackScreenProps<RootStackParamList, 'Help'>;
+export type ReportProductScreenProps = NativeStackScreenProps<RootStackParamList, 'ReportProduct'>;

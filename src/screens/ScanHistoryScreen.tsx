@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { canUseExtendedHistory, FREE_HISTORY_LIMIT, premiumMode, showsPremiumScreen } from '../features/entitlements';
+import { HISTORY_EMPTY } from '../content/help';
 import { clearScanHistory, deleteScan, listScanHistory, SIGN_IN_TO_SAVE, type SavedProduct } from '../services/cloud';
 import { reopenProduct } from '../services/reopenProduct';
 import { colors, radius, spacing, type } from '../theme';
@@ -104,8 +105,13 @@ export function ScanHistoryScreen({ navigation }: ScanHistoryScreenProps) {
             <Button label="Sign in" onPress={() => navigation.navigate('SignIn')} />
           </View>
         ) : null}
+        {profile && loading && items.length === 0 ? <ActivityIndicator color={colors.primary} /> : null}
         {profile && loaded && items.length === 0 && !loading && !message ? (
-          <Text style={styles.body}>Scans you open while signed in will appear here.</Text>
+          <View style={styles.stack}>
+            <Text style={styles.body}>{HISTORY_EMPTY}</Text>
+            <Button label="Scan" onPress={() => navigation.navigate('Scanner')} />
+            <Button label="Search products" onPress={() => navigation.navigate('Search')} variant="secondary" />
+          </View>
         ) : null}
         {items.map((item) => (
           <View key={item.id} style={styles.card}>
@@ -119,6 +125,7 @@ export function ScanHistoryScreen({ navigation }: ScanHistoryScreenProps) {
           </View>
         ))}
         {message ? <Text style={styles.error}>{message}</Text> : null}
+        {message ? <Button label="Try again" onPress={() => void load(0, true)} variant="secondary" /> : null}
         {hasMore ? <Button label="Load more" loading={loading} onPress={() => void load(page + 1, false)} /> : null}
         {profile && items.length > 0 ? (
           <Button label="Clear history" onPress={confirmClear} variant="secondary" />

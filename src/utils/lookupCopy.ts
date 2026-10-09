@@ -3,7 +3,7 @@ import type { LookupFailureCode } from '../types/product';
 export const LOOKUP_COPY: Record<LookupFailureCode, { title: string; body: string }> = {
   not_found: {
     title: 'Product not found',
-    body: 'Open Food Facts does not have this barcode yet. Check the code, or scan another product.',
+    body: 'This barcode was not found in the available database. Nothing here is a substitute for that product. You can try again, search by name, or scan another product.',
   },
   network: {
     title: 'No internet connection',

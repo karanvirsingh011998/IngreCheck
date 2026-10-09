@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
+import { FAVORITES_EMPTY } from '../content/help';
 import { listFavorites, removeFavorite, SIGN_IN_TO_SAVE, type SavedProduct } from '../services/cloud';
 import { reopenProduct } from '../services/reopenProduct';
 import { colors, radius, spacing, type } from '../theme';
@@ -14,9 +15,12 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps) {
   const [items, setItems] = useState<SavedProduct[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const load = useCallback(async () => {
+    setLoading(true);
     const result = await listFavorites();
+    setLoading(false);
     setLoaded(true);
     if (!result.ok) {
       setMessage(result.message);
@@ -62,8 +66,13 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps) {
             <Button label="Sign in" onPress={() => navigation.navigate('SignIn')} />
           </View>
         ) : null}
-        {profile && loaded && items.length === 0 && !message ? (
-          <Text style={styles.body}>Save a product from its page to keep it here.</Text>
+        {profile && loading && items.length === 0 ? <ActivityIndicator color={colors.primary} /> : null}
+        {profile && loaded && items.length === 0 && !message && !loading ? (
+          <View style={styles.stack}>
+            <Text style={styles.body}>{FAVORITES_EMPTY}</Text>
+            <Button label="Scan" onPress={() => navigation.navigate('Scanner')} />
+            <Button label="Search products" onPress={() => navigation.navigate('Search')} variant="secondary" />
+          </View>
         ) : null}
         {items.map((item) => (
           <View key={item.id} style={styles.card}>
@@ -75,6 +84,7 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps) {
           </View>
         ))}
         {message ? <Text style={styles.error}>{message}</Text> : null}
+        {message ? <Button label="Try again" onPress={() => void load()} variant="secondary" /> : null}
       </ScrollView>
     </AppShell>
   );

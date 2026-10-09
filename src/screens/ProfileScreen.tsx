@@ -5,6 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
 import { useAuth } from '../context/AuthContext';
+import { APP_VERSION } from '../config/appInfo';
 import { premiumMode, showsPremiumScreen } from '../features/entitlements';
 import {
   deleteOwnAccount,
@@ -93,7 +94,7 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
   function confirmDelete() {
     Alert.alert(
       'Delete account?',
-      'This removes your profile, scan history, favorites, and ingredient preferences.',
+      'This asks Supabase to delete this account and its profile, scan history, favorites, and ingredient preferences. A product copy already stored on this device can remain until you remove the app. If deletion fails, you stay signed in and the account is not described as deleted.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -160,8 +161,10 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
             <Button label="Sign out" onPress={confirmSignOut} variant="ghost" />
             <Button label="Delete account" loading={busy === 'delete'} onPress={confirmDelete} variant="ghost" />
             {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Button label="Help" onPress={() => navigation.navigate('Help')} variant="secondary" />
             <Button label="Privacy draft" onPress={() => navigation.navigate('Privacy')} variant="ghost" />
             <Button label="Terms draft" onPress={() => navigation.navigate('Terms')} variant="ghost" />
+            <Text style={styles.caption}>App version {APP_VERSION}</Text>
           </View>
         ) : null}
         {!initializing && !profile ? (
@@ -193,8 +196,10 @@ export function ProfileScreen({ navigation }: ProfileScreenProps) {
                 {error ? <Text style={styles.error}>{error}</Text> : null}
               </>
             )}
+            <Button label="Help" onPress={() => navigation.navigate('Help')} variant="secondary" />
             <Button label="Privacy draft" onPress={() => navigation.navigate('Privacy')} variant="ghost" />
             <Button label="Terms draft" onPress={() => navigation.navigate('Terms')} variant="ghost" />
+            <Text style={styles.caption}>App version {APP_VERSION}</Text>
           </View>
         ) : null}
       </ScrollView>

@@ -8,7 +8,7 @@ export const PRIVACY_SECTIONS: { heading: string; body: string }[] = [
   },
   {
     heading: 'Product lookups',
-    body: 'When you scan or type a barcode, the app sends that barcode to Open Food Facts and receives product information. The app does not upload a photo of the barcode. Open Food Facts is a separate service with its own policies.',
+    body: 'When you scan or type a barcode, the app sends that barcode to Open Food Facts. When you search by name or brand, it sends that search text to Open Food Facts. The app does not upload a photo of the barcode. Open Food Facts is a separate service with its own policies. Product data from that database is available under the Open Database License, and product images have their own license.',
   },
   {
     heading: 'Accounts',

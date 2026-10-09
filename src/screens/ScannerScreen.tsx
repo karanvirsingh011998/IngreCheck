@@ -13,6 +13,7 @@ import { StateMessage } from '../components/StateMessage';
 import { colors, radius, spacing, type } from '../theme';
 import type { LookupFailureCode } from '../types/product';
 import type { ScannerScreenProps } from '../types/navigation';
+import { cameraAccessCopy } from '../utils/cameraAccess';
 import { normalizeScannedBarcode } from '../utils/barcode';
 import { LOOKUP_COPY } from '../utils/lookupCopy';
 import { lookupProduct } from '../services/openFoodFacts';
@@ -131,18 +132,18 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
           ) : null}
           {permission && !permission.granted ? (
             <StateMessage
-              title={permission.canAskAgain ? 'Camera access is needed' : 'Camera access is off'}
-              body={
-                permission.canAskAgain
-                  ? 'IngreCheck reads barcodes on your device. Photos are not uploaded. You can also type a barcode.'
-                  : 'Camera access is off. To scan, allow the camera in Settings. You can also type a barcode. Photos are not uploaded.'
-              }
+              title={cameraAccessCopy(permission.canAskAgain).title}
+              body={cameraAccessCopy(permission.canAskAgain).body}
               actions={
                 permission.canAskAgain
-                  ? [{ label: 'Allow camera', onPress: () => requestPermission() }]
+                  ? [
+                      { label: 'Allow camera', onPress: () => requestPermission() },
+                      { label: 'Search products', onPress: () => navigation.navigate('Search'), variant: 'secondary' },
+                    ]
                   : [
                       { label: 'Open Settings', onPress: () => Linking.openSettings() },
                       { label: 'Enter a barcode', onPress: () => setManualOpen(true), variant: 'secondary' },
+                      { label: 'Search products', onPress: () => navigation.navigate('Search'), variant: 'secondary' },
                     ]
               }
             />
@@ -169,7 +170,11 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
           {phase === 'error' && copy ? (
             <StateMessage
               title={copy.title}
-              body={copy.body}
+              body={
+                failure === 'not_found' && lastCode.current
+                  ? `Barcode ${lastCode.current}. ${copy.body}`
+                  : copy.body
+              }
               tone={failure === 'not_found' ? 'warning' : 'error'}
               actions={[
                 {
@@ -180,7 +185,17 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
                     }
                   },
                 },
-                { label: 'Enter a barcode', onPress: () => setManualOpen(true), variant: 'secondary' },
+                { label: 'Search products', onPress: () => navigation.navigate('Search'), variant: 'secondary' },
+                {
+                  label: 'Scan another product',
+                  onPress: () => {
+                    lock.current = false;
+                    lastCode.current = null;
+                    setFailure(null);
+                    setPhase('ready');
+                  },
+                  variant: 'secondary',
+                },
               ]}
             />
           ) : null}
@@ -189,6 +204,7 @@ export function ScannerScreen({ navigation, route }: ScannerScreenProps) {
           {phase !== 'loading' ? (
             <>
               <Button label="Enter a barcode" onPress={() => setManualOpen(true)} variant="secondary" />
+              <Button label="Search products" onPress={() => navigation.navigate('Search')} variant="secondary" />
               <Text style={styles.simulatorNote}>
                 On a simulator, type the barcode. A phone camera is the reliable way to scan.
               </Text>
