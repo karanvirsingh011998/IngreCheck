@@ -108,7 +108,7 @@ export function SearchScreen({ navigation }: SearchScreenProps) {
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Search products</Text>
           <Text style={styles.body}>
-            Search Open Food Facts by product name or brand. Many products are missing from that database, including
+            Search by product name or brand. Many products are missing from the database, including
             some foods sold in India.
           </Text>
           <TextInput

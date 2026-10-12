@@ -60,7 +60,7 @@ export function CompareScreen({ navigation, route }: CompareScreenProps) {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Compare products</Text>
         <Text style={styles.body}>
-          Compare two packaged foods from their Open Food Facts records. An account is optional. This screen does not
+          Compare two packaged foods from their product records. An account is optional. This screen does not
           choose a healthier product.
         </Text>
         <SlotCard

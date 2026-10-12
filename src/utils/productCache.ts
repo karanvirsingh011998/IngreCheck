@@ -1,7 +1,7 @@
 import type { Product } from '../types/product';
 
 export const CACHED_PRODUCT_LABEL =
-  'This is a saved copy from your last lookup, not a fresh result from Open Food Facts.';
+  'This is a saved copy from your last lookup, not a fresh result.';
 
 export const PRODUCT_CACHE_LIMIT = 30;
 

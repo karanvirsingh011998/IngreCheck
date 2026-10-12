@@ -1,15 +1,15 @@
 export const HELP_SECTIONS: { heading: string; body: string }[] = [
   {
     heading: 'Barcode scanning',
-    body: 'The scan screen reads a barcode with the camera, or you can type the code. The app sends that code to Open Food Facts and shows the record it returns. Photos of the barcode are not uploaded.',
+    body: 'The scan screen reads a barcode with the camera, or you can type the code. The app looks up that code and shows the record it finds. Photos of the barcode are not uploaded.',
   },
   {
     heading: 'Search without a barcode',
-    body: 'Search Products sends the name or brand you type to Open Food Facts when you tap Search. It does not search on every letter. Choosing a result loads that product’s record. Many packaged foods in India are not in the database.',
+    body: 'Search Products looks up the name or brand you type when you tap Search. It does not search on every letter. Choosing a result loads that product’s record. Many packaged foods in India are not in the database.',
   },
   {
     heading: 'Where the information comes from',
-    body: 'Product names, ingredients, nutrition, allergens, traces, and NOVA groups come from Open Food Facts. Contributors add that data. IngreCheck does not verify it against the package in your hand.',
+    body: 'The product database is named in the Privacy draft and the Terms draft. IngreCheck does not verify a record against the package in your hand.',
   },
   {
     heading: 'Missing information',
@@ -21,7 +21,7 @@ export const HELP_SECTIONS: { heading: string; body: string }[] = [
   },
   {
     heading: 'Report incorrect information',
-    body: 'The product screen can open the public Open Food Facts record. IngreCheck does not have its own reporting service, so it does not send or store a report.',
+    body: 'IngreCheck does not have its own reporting service, so it does not send or store a report.',
   },
   {
     heading: 'Contact',
@@ -34,7 +34,7 @@ export const HELP_SECTIONS: { heading: string; body: string }[] = [
 ];
 
 export const REPORT_NOT_SENT =
-  'IngreCheck does not send this report. Nothing was submitted to IngreCheck or Open Food Facts from this screen.';
+  'IngreCheck does not send this report. Nothing was submitted from this screen.';
 
 export const REPORT_ISSUES = [
   'Incorrect ingredients',
@@ -46,7 +46,7 @@ export const REPORT_ISSUES = [
 ] as const;
 
 export const PREFERENCE_LIMIT_NOTE =
-  'A match only happens when that name appears in the ingredient list Open Food Facts recorded. This cannot find every ingredient, and it does not mean a product is safe.';
+  'A match only happens when that name appears in the recorded ingredient list. This cannot find every ingredient, and it does not mean a product is safe.';
 
 export const FAVORITES_EMPTY =
   'No favorites yet. Save a product from its page after you scan or search.';

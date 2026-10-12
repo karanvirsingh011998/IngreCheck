@@ -55,7 +55,7 @@ export const TERMS_SECTIONS: { heading: string; body: string }[] = [
   },
   {
     heading: 'Product records can be wrong or old',
-    body: 'Product details come from Open Food Facts and from the people who contribute to that database. A record can be missing, outdated, or different from the package you are holding. The app does not promise that every barcode will return a product.',
+    body: 'Product details come from Open Food Facts (https://world.openfoodfacts.org) and from the people who contribute to that database. Product data is available under the Open Database License, and product images have their own license. A record can be missing, outdated, or different from the package you are holding. IngreCheck does not verify each product. The app does not promise that every barcode will return a product.',
   },
   {
     heading: 'Allergens, nutrition, and processing',

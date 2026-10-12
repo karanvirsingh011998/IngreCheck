@@ -109,7 +109,7 @@ export function ProductScreen({ navigation, route }: ProductScreenProps) {
         <NutritionSection product={product} />
         <AllergensSection product={product} />
         <NovaSection product={product} />
-        <SourceAttribution product={product} />
+        <SourceAttribution />
         <ProductDisclaimer />
         <Button
           label="Report incorrect information"

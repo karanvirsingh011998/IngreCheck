@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppShell } from '../components/AppShell';
 import { Button } from '../components/Button';
@@ -8,7 +8,7 @@ import { colors, radius, spacing, type } from '../theme';
 import type { ReportProductScreenProps } from '../types/navigation';
 
 export function ReportProductScreen({ route }: ReportProductScreenProps) {
-  const { productName, sourceUrl } = route.params;
+  const { productName } = route.params;
   const [selected, setSelected] = useState<string | null>(null);
   const [noted, setNoted] = useState(false);
 
@@ -17,7 +17,7 @@ export function ReportProductScreen({ route }: ReportProductScreenProps) {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Report incorrect information</Text>
         <Text style={styles.body}>
-          {productName} comes from Open Food Facts. IngreCheck does not store a report and does not send one when you
+          {productName} may include incorrect details. IngreCheck does not store a report and does not send one when you
           choose an issue.
         </Text>
         {REPORT_ISSUES.map((issue) => {
@@ -45,13 +45,9 @@ export function ReportProductScreen({ route }: ReportProductScreenProps) {
         {noted ? (
           <View style={styles.note}>
             <Text style={styles.body}>{REPORT_NOT_SENT}</Text>
-            <Text style={styles.body}>
-              You can open the public product record and suggest a correction there if you have an Open Food Facts
-              account.
-            </Text>
+            <Text style={styles.body}>The name of the product database is in the Privacy draft and the Terms draft.</Text>
           </View>
         ) : null}
-        <Button label="Open the Open Food Facts record" onPress={() => Linking.openURL(sourceUrl)} variant="secondary" />
       </ScrollView>
     </AppShell>
   );

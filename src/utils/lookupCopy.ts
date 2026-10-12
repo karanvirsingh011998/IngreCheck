@@ -19,10 +19,10 @@ export const LOOKUP_COPY: Record<LookupFailureCode, { title: string; body: strin
   },
   server: {
     title: 'Lookup failed',
-    body: 'Open Food Facts could not complete this request. Please try again in a moment.',
+    body: 'The product service could not complete this request. Please try again in a moment.',
   },
   rate_limit: {
     title: 'Please wait a moment',
-    body: 'Open Food Facts limits how many products can be requested at once. Wait about a minute, then try again.',
+    body: 'The product service limits how many products can be requested at once. Wait about a minute, then try again.',
   },
 };
